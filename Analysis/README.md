@@ -1,43 +1,43 @@
 # Analysis Archive
 
-Bu klasör, `Makale_Taslagi_I.md` içinde kullanılan analiz girdilerini, kodları,
-not defterlerini, ara çıktıları, nihai tabloları ve şekilleri tek yerde toplar.
-Özgün klasörler silinmemiş veya taşınmamış; makaledeki göreli bağlantıların
-bozulmaması için buraya kopyalanmıştır.
+This directory consolidates the analysis inputs, code, notebooks, intermediate
+outputs, final tables, and figures used in `Makale_Taslagi_I.md`. The original
+directories have not been deleted or moved; their contents were copied here to
+preserve the relative links used in the manuscript.
 
-## Klasör yapısı
+## Directory Structure
 
-- `00_Methodology_and_Inputs`: yöntem, sektör eşlemesi ve metodoloji şemaları.
-- `01_SNII`: ağ göstergeleri, SNII kodları, ara çıktılar, tablolar ve şekiller.
-- `02_CGE_EIPI`: SAM/CGE çözümleri, karşı-olgusal şoklar ve EIPI sonuçları.
-- `03_Hypothesis_Tests`: birleşik panel, H1-H4 testleri, sınıflama ve sağlamlık çıktıları.
-- `04_Robust_Core_and_Policy`: Pareto katmanları, dengeli skor, 96 spesifikasyon ve politika senaryoları.
-- `05_Elasticity_Sensitivity`: Ek C'deki CET-Armington ve CES duyarlılık analizleri.
+- `00_Methodology_and_Inputs`: methodology, sector mapping, and methodological diagrams.
+- `01_SNII`: network indicators, SNII code, intermediate outputs, tables, and figures.
+- `02_CGE_EIPI`: SAM/CGE solutions, counterfactual shocks, and EIPI results.
+- `03_Hypothesis_Tests`: merged panel, H1–H4 tests, classification, and robustness outputs.
+- `04_Robust_Core_and_Policy`: Pareto layers, balanced scores, 96 specifications, and policy scenarios.
+- `05_Elasticity_Sensitivity`: CET–Armington and CES sensitivity analyses reported in Appendix C.
 
-## Makaledeki ana kanıt zinciri
+## Main Evidence Chain in the Manuscript
 
-1. `01_SNII`: Şekil 2-4 ve ana SNII tabloları.
-2. `02_CGE_EIPI`: Şekil 5-6 ve CGE/EIPI ana sonuçları.
-3. `03_Hypothesis_Tests`: H1-H4 sonuçları ve Şekil 7.
-4. `04_Robust_Core_and_Policy`: Şekil 8-9, Pareto, sağlam çekirdek ve politika sonuçları.
-5. `05_Elasticity_Sensitivity`: Ek C, Tablo C1-C2 sonuçları ve yeniden üretim betiği.
+1. `01_SNII`: Figures 2–4 and the main SNII tables.
+2. `02_CGE_EIPI`: Figures 5–6 and the main CGE/EIPI results.
+3. `03_Hypothesis_Tests`: H1–H4 results and Figure 7.
+4. `04_Robust_Core_and_Policy`: Figures 8–9, Pareto analysis, robust-core results, and policy results.
+5. `05_Elasticity_Sensitivity`: Appendix C, Tables C1–C2, and the reproduction script.
 
-## Duyarlılık analizini yeniden üretme
+## Reproducing the Sensitivity Analysis
 
-Çalışma dizininden:
+From the project root directory, run:
 
 ```powershell
 python "Analysis/05_Elasticity_Sensitivity/CGE_Sensitivity_Analysis.py"
 ```
 
-Betik, sonuçları aynı klasörde CSV ve Excel olarak üretir. Ek C'nin yeniden
-üretimi için gereken çalışabilir model kodu ve SAM girdisi duyarlılık paketiyle
-birlikte aynı klasörde tutulur.
+The script generates the results as CSV and Excel files in the same directory.
+The executable model code and SAM input required to reproduce Appendix C are
+stored alongside the sensitivity-analysis package in that directory.
 
-## Bütünlük denetimi
+## Integrity Check
 
-- Makalede kullanılan dört ana analiz aşamasındaki dosyalar eksiksiz kopyalanmıştır.
-- Klasör adlarında geliştirme aracı veya model adı kullanılmamıştır.
-- Makalede bağlantı verilen dokuz ana görselin arşivde bulunduğu doğrulanmıştır.
-- Duyarlılık referansı, yeniden üretim betiği, CSV ve üç sayfalı Excel sonuç dosyası eklenmiştir.
-- Güncel arşiv toplamı 83 dosya ve yaklaşık 15.79 MB'dir.
+- Files from all four main stages of the analysis used in the manuscript have been copied in full.
+- Directory names do not contain development-tool or model names.
+- The archive has been verified to contain all nine principal figures linked in the manuscript.
+- The sensitivity reference, reproduction script, CSV output, and three-sheet Excel results file are included.
+- The current archive contains 83 files and is approximately 15.79 MB in size.
