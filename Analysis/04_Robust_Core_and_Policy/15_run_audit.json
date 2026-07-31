@@ -1,0 +1,19 @@
+{
+  "n_sectors": 62,
+  "n_specifications": 96,
+  "primary_front_1": [
+    "sec29",
+    "sec44",
+    "sec48"
+  ],
+  "primary_core_candidates": [
+    "sec29",
+    "sec44",
+    "sec48"
+  ],
+  "robust_core": [
+    "sec29",
+    "sec44"
+  ],
+  "random_seed": 20260715
+}
