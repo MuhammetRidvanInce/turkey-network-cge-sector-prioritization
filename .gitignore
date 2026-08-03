@@ -30,3 +30,9 @@ Desktop.ini
 
 # Logs
 *.log
+
+# Keep the public repository limited to the reproducible analysis archive.
+# Other project files remain available locally but are not tracked on GitHub.
+/*
+!/.gitignore
+!/Analysis/
