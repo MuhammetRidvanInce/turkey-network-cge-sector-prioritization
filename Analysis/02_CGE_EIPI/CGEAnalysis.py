@@ -28,8 +28,8 @@ class CGEModel:
     Structure (production: CES value added + Leontief intermediates; trade:
     CET exports/domestic supply and Armington imports/domestic demand;
     institutions: household/government/investment with the SAM's VAT blocks)
-    follows CGEAnalysisExample.py, with one deliberate change mandated by the
-    EIPI prompt (Section 1.1): the numeraire is an aggregate consumer price
+    follows the standard SAM-based implementation, with one deliberate
+    specification choice: the numeraire is an aggregate consumer price
     index (CPI), NOT the wage. Both the wage `w` and the capital rental `r`
     are fully endogenous. Fixing the wage would make aggregate labor income
     (w * Lbar) move one-for-one with the wage only, collapsing the functional
@@ -878,15 +878,10 @@ class CGEModel:
         """Reset Aprod to the calibrated baseline, then apply a productivity
         shock to exactly one sector: A_sector^cf = A_sector^base * (1 + shock_size).
 
-        NOTE on signature: the prompt's abbreviated method list shows
-        `shock_model(self, shock_size=0.10)`. Because "apply the shock to one
-        sector" (Section 1.4/2.4) is not expressible without naming that
-        sector, this implementation adds an explicit `sector` argument -- the
-        method name and all other required names are unchanged. `shock_size`
-        may still be a scalar OR a {sector: size} mapping (Section 2.4's
-        "per-sector mapping" support for the size-normalized robustness
-        variant in Section 1.5); when a mapping is given, `shock_size[sector]`
-        is used.
+        The explicit `sector` argument identifies the sector receiving the
+        shock. `shock_size` may be a scalar or a {sector: size} mapping; when
+        a mapping is supplied, `shock_size[sector]` is used. Mapping support
+        is required for the size-normalized robustness variant.
         """
         if self.model is None:
             self.build_model()

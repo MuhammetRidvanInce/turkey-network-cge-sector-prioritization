@@ -33,16 +33,14 @@ class StrategicAnalysis:
     Final analytical layer combining the network-based SNII and the CGE-based
     EIPI. Performs NO new network or CGE computation -- it merges the
     already-produced SNII/EIPI/CGE outputs, builds the four-quadrant
-    strategic classification, and runs the H1-H4 hypothesis tests plus
-    robustness checks (Strategic_Analysis_Prompt.md).
+    strategic classification, and runs the hypothesis tests and robustness
+    checks.
 
     Input files (defaults) are this project's own pipeline outputs:
     `3_snii_results.xlsx` (Analiz I -- SNIIComposite.general_results() export),
     `4_eipi_results.xlsx` / `2_cge_counterfactual_results.xlsx` /
     `1_cge_baseline_solution.xlsx` (Analiz II -- CGEModel / EIPIComposite
-    exports). The prompt's expected `network_candidate_indicatorsV2.xlsx`
-    is not produced by this project's pipeline under that name; the seven
-    raw network indicators are instead sourced from
+    exports). The seven raw network indicators are sourced from
     `../Analiz I/1_network_candidate_indicators.xlsx`
     (`coefficient_based_indicators` sheet) -- the SNII pipeline's own
     raw-indicator export, built from the same `1-IntermediateInputs.xlsx`.

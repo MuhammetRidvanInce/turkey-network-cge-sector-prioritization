@@ -118,6 +118,6 @@ figure outputs are written to their respective analysis directories.
 
 ## Archive Status
 
-The versioned archive contains 80 files across the six analysis stages,
+The versioned archive contains 75 files across the six analysis stages,
 including source code, notebooks, model inputs, machine-readable outputs, and
 publication-ready figures.
