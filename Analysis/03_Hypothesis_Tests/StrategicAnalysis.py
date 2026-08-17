@@ -89,20 +89,6 @@ class StrategicAnalysis:
                      "D1_direct", "D2_embeddedness", "D3_bridge", "D4_supply"]
         snii = snii[[c for c in snii_cols if c in snii.columns]].copy()
 
-        # SNII_DIM_size_controlled lives in its own sheet in this project's
-        # 3_snii_results.xlsx export (sheet "size_controlled_SNII"); merge
-        # it in by sector index rather than assuming it's on the main sheet.
-        try:
-            size_controlled = self._read_sheet(
-                self.snii_path, ["size_controlled_SNII"]
-            )[["SNII_DIM_size_controlled"]]
-            snii = snii.join(size_controlled, how="left")
-        except Exception:
-            pass
-        assert "SNII_DIM_size_controlled" in snii.columns, (
-            f"Could not locate SNII_DIM_size_controlled in {self.snii_path}."
-        )
-
         eipi = self._read_sheet(self.eipi_path, ["eipi_results", "eipi_primary", "results"])
         eipi_cols = ["EIPI_CH", "EIPI_CH_size_controlled", "EIPI_TOPSIS_size_controlled",
                      "EIPI_PCA_size_controlled", "EIPI_AVG_size_controlled",
@@ -123,7 +109,6 @@ class StrategicAnalysis:
         domar_weight.name = "domar_weight"
         log_output = np.log(total_output)
         log_output.name = "log_output"
-
         frames = [snii, eipi, network, cge, total_output, domar_weight, log_output]
         common_index = frames[0].index
         for f in frames[1:]:
@@ -345,41 +330,6 @@ class StrategicAnalysis:
         return pd.DataFrame(rows).set_index(["predictor_set", "outcome"])
 
     # ------------------------------------------------------------------
-    # Section 4, H4
-    # ------------------------------------------------------------------
-    def test_h4(self, eipi_target=None, model_type="elasticnet") -> pd.DataFrame:
-        """Nested models predicting the primary EIPI target out-of-sample
-        (LOOCV): A = size only (log output); B = size + network sub-scores;
-        C = network sub-scores only. Incremental R^2 = B - A. Repeated for
-        each robustness predictor set (Section 2.1) and, in the notebook,
-        for both EIPI_CH_size_controlled and EIPI_CH (Section 4, H4)."""
-        if self.panel is None:
-            self.build_panel()
-        p = self.panel
-        target = eipi_target or self.eipi_axis
-        y = p[target]
-
-        size_X = p[["log_output"]]
-        model_a = self._loocv_metrics(size_X, y, model_type="ols")
-
-        rows = []
-        for set_name, cols in PREDICTOR_SETS.items():
-            X_b = pd.concat([size_X, p[cols]], axis=1)
-            X_c = p[cols]
-            model_b = self._loocv_metrics(X_b, y, model_type=model_type)
-            model_c = self._loocv_metrics(X_c, y, model_type=model_type)
-            rows.append({
-                "predictor_set": set_name, "target": target,
-                "R2_A_size_only": model_a["loocv_r2"],
-                "R2_B_size_plus_network": model_b["loocv_r2"],
-                "R2_C_network_only": model_c["loocv_r2"],
-                "incremental_R2_B_minus_A": model_b["loocv_r2"] - model_a["loocv_r2"],
-                "B_degenerate": model_b["degenerate"], "C_degenerate": model_c["degenerate"],
-            })
-
-        return pd.DataFrame(rows).set_index("predictor_set")
-
-    # ------------------------------------------------------------------
     # classification agreement
     # ------------------------------------------------------------------
     def classification_agreement(self) -> dict:
@@ -418,31 +368,19 @@ class StrategicAnalysis:
                 agreement_matrix.loc[a, b] = float((table[a] == table[b]).mean())
         return kappa_matrix, agreement_matrix
 
-    def robustness(self, h4_size_controlled=None) -> dict:
+    def robustness(self) -> dict:
         """Section 5 robustness bundle: (1) threshold mean-vs-median,
         (2) variant-classification stability (kappa), (3) ground-truth
-        confirmation that all EIPI aggregation variants are evaluated after the
-        same size control, (4) predictive model comparison (elastic net vs
-        ridge vs OLS),
-        (4) predictive model comparison (elastic net vs ridge vs OLS),
+        (3) predictive model comparison (elastic net vs ridge vs OLS),
         (5) predictor-set comparison (already embedded in H3/H4 output).
 
-        `h4_size_controlled`: pass the notebook's already-computed
-        `sa.test_h4()` result (primary target) to avoid re-running the same
-        ~80s nested-LOOCV computation a second time here.
         """
         if self.classifications is None:
             self.classify()
 
         kappa_matrix, agreement_matrix = self._variant_stability_kappa()
 
-        # Primary target: all aggregation variants used elsewhere in the
-        # robustness design are size-controlled before comparison.
-        h1_size_controlled = self.test_h1(eipi_target="EIPI_CH_size_controlled")
-        h1_size_inclusive = self.test_h1(eipi_target="EIPI_CH")
-        h4_size_controlled = h4_size_controlled if h4_size_controlled is not None else \
-            self.test_h4(eipi_target="EIPI_CH_size_controlled")
-        h4_size_inclusive = self.test_h4(eipi_target="EIPI_CH")
+        h1_primary = self.test_h1(eipi_target="EIPI_CH")
 
         # (4) model comparison on H3 (dimension sub-scores predictor set only, for tractability)
         model_comparison_rows = []
@@ -459,9 +397,6 @@ class StrategicAnalysis:
             "variant_stability_kappa": kappa_matrix,
             "variant_stability_agreement_pct": agreement_matrix,
             "borderline_sectors": self.classifications.index[self.classifications["borderline"]].tolist(),
-            "ground_truth_headline_size_controlled": h1_size_controlled["headline"],
-            "ground_truth_headline_size_inclusive": h1_size_inclusive["headline"],
-            "ground_truth_h4_size_controlled": h4_size_controlled,
-            "ground_truth_h4_size_inclusive": h4_size_inclusive,
+            "ground_truth_headline": h1_primary["headline"],
             "model_comparison": model_comparison,
         }

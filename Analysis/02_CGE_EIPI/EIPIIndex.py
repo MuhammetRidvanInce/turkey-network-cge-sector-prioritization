@@ -320,10 +320,6 @@ class EIPIComposite:
             out[f"rank_{col}"] = out[col].rank(ascending=False, method="min").astype(int)
             out[f"{col}_pctrank"] = out[col].rank(pct=True)
 
-        # Section 4.3: size-controlled (residualized) EIPI variants.
-        # Every index used in cross-method robustness is residualized on the
-        # same log-output control, so aggregation-method comparisons do not
-        # conflate method choice with sector size.
         log_output = np.log(self.sector_output.reindex(out.index).clip(lower=1e-6))
         X = sm.add_constant(log_output)
         size_control_models = {}
@@ -349,36 +345,21 @@ class EIPIComposite:
         }
         return out
 
-    # ------------------------------------------------------------------
-    # Section 1.5 / 6.4: size diagnostic
-    # ------------------------------------------------------------------
     def size_diagnostic(self) -> dict:
         if self.results_ is None:
             self.general_results()
-
         output_share = self.sector_output.reindex(self.results_.index) / self.sector_output.sum()
-
         rows = []
         for col in ["EIPI_CH", "EIPI_TOPSIS", "EIPI_EQUAL_TOPSIS", "EIPI_PCA", "EIPI_AVG"]:
             s = self.results_[col]
             rows.append({"indicator": col, "spearman_vs_output_share": s.corr(output_share, method="spearman"),
-                          "pearson_vs_output_share": s.corr(output_share, method="pearson")})
-        for col in ALL_INDICATORS:
-            s = self.raw[col]
-            rows.append({"indicator": col, "spearman_vs_output_share": s.corr(output_share, method="spearman"),
-                          "pearson_vs_output_share": s.corr(output_share, method="pearson")})
+                         "pearson_vs_output_share": s.corr(output_share, method="pearson")})
         size_corr = pd.DataFrame(rows).set_index("indicator")
-
-        top10_before = self.results_["EIPI_CH"].sort_values(ascending=False).head(10).index.tolist()
-        top10_after = self.results_["EIPI_CH_size_controlled"].sort_values(ascending=False).head(10).index.tolist()
-
-        return {
-            "output_share": output_share,
-            "size_correlations": size_corr,
-            "top10_before_size_control": top10_before,
-            "top10_after_size_control": top10_after,
-            "top10_overlap_count": len(set(top10_before) & set(top10_after)),
-        }
+        before = self.results_["EIPI_CH"].nlargest(10).index.tolist()
+        after = self.results_["EIPI_CH_size_controlled"].nlargest(10).index.tolist()
+        return {"output_share": output_share, "size_correlations": size_corr,
+                "top10_before_size_control": before, "top10_after_size_control": after,
+                "top10_overlap_count": len(set(before) & set(after))}
 
     # ------------------------------------------------------------------
     # Section 7: robustness
@@ -399,7 +380,7 @@ class EIPIComposite:
         top10_sets = {name: set(res[name].sort_values(ascending=False).head(10).index) for name in model_cols}
         for name in ["EIPI_CH_size_controlled", "EIPI_TOPSIS_size_controlled",
                      "EIPI_PCA_size_controlled", "EIPI_AVG_size_controlled"]:
-            top10_sets[name] = set(res[name].sort_values(ascending=False).head(10).index)
+            top10_sets[name] = set(res[name].nlargest(10).index)
         common_all = set.intersection(*top10_sets.values())
 
         return {

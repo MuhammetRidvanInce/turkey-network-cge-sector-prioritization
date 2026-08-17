@@ -772,7 +772,7 @@ class CGEModel:
         investment = self._price_qty_sum(values_dict, "pci", "INV")
         exports = self._price_qty_sum(values_dict, "pe", "E")
         imports = self._price_qty_sum(values_dict, "pm", "M")
-        absorption = self._price_qty_sum(values_dict, "pq", "Q")
+        total_output_value = self._price_qty_sum(values_dict, "pz", "Z")
 
         real_gdp = self._real_gdp(values_dict, base_values_dict)
         nominal_gdp = household_consumption + government_consumption + investment + exports - imports
@@ -800,12 +800,14 @@ class CGEModel:
 
         export_share = self._safe_ratio(exports, nominal_gdp) * 100.0
 
-        # ImportDependency (Section 3): M / (Q + M - X), all nominal
-        # aggregates (Q = total nominal absorption of Armington composite
-        # goods, which already nets imports in; adding M and subtracting X
-        # follows the prompt's literal formula for an import-penetration-style
-        # ratio). Falls back to M/GDP if the denominator is degenerate.
-        denom = absorption + imports - exports
+        # ImportDependency: nominal import penetration, M / (Z + M - E).
+        # Z is gross domestic output, E is exports, and M is imports, all at
+        # their corresponding current prices.  Thus the denominator is
+        # apparent domestic use.  It is value-equivalent to Armington
+        # composite absorption only under the model's accounting identities;
+        # using Z, M, and E makes the trade-accounting definition explicit.
+        # Falls back to M/GDP if the denominator is degenerate.
+        denom = total_output_value + imports - exports
         if abs(denom) > self.EPSILON:
             import_dependency = self._safe_ratio(imports, denom) * 100.0
         else:

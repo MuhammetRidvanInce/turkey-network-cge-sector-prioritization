@@ -1,8 +1,8 @@
-# Analiz IV: Pareto-Etkinlik, Spesifikasyon Sağlamlığı ve Normatif Tercihler Altında Çekirdek Sektörlerin Belirlenmesi
+﻿# Analiz IV: Pareto-Etkinlik, Spesifikasyon Sağlamlığı ve Normatif Tercihler Altında Çekirdek Sektörlerin Belirlenmesi
 
 ## Özet
 
-Bu analiz, SNII ve EIPI ortalamalarını kesim noktası olarak kullanan önceki dört-çeyrek sınıflamasını daha bilimsel ve normatif olarak şeffaf bir karar çerçevesine dönüştürmektedir. Yeni yöntem üç ayrımı birlikte uygular: (i) iki amaçlı Pareto-etkinlik, (ii) her iki eksende dengeli performans ve alternatif ölçüm tercihlerine karşı üyelik sağlamlığı, (iii) açık politika amaçları altında normatif sıralama. Ana SNII–boyut-kontrollü EIPI düzleminde birinci Pareto katmanı `sec29`, `sec44`, `sec48` ve `sec1` sektörlerinden oluşmuştur. Dengeli performans filtresi `sec1`i dışarıda bırakarak `sec29`, `sec44` ve `sec48`i birincil aday olarak seçmiştir. Dört SNII, dört EIPI, iki dönüşüm ve üç denge kuralından oluşan 96 spesifikasyonda `sec29` ve `sec44` her defasında seçilmiş; `sec30` %50, `sec1` %26.0, `sec31` %18.8 ve `sec48` yalnızca %7.3 seçim oranı göstermiştir. Bu nedenle nihai sağlam çekirdek `sec29` ve `sec44` olarak belirlenmiştir. Bu sınıflama istatistiksel bir üyelik olasılığı değil, açıkça tanımlanmış spesifikasyon evrenindeki karar kararlılığıdır.
+Bu analiz, SNII ve EIPI ortalamalarını kesim noktası olarak kullanan önceki dört-çeyrek sınıflamasını daha bilimsel ve normatif olarak şeffaf bir karar çerçevesine dönüştürmektedir. Yeni yöntem üç ayrımı birlikte uygular: (i) iki amaçlı Pareto-etkinlik, (ii) her iki eksende dengeli performans ve alternatif ölçüm tercihlerine karşı üyelik sağlamlığı, (iii) açık politika amaçları altında normatif sıralama. Ana SNII–doğrudan EIPI düzleminde birinci Pareto katmanı `sec29`, `sec44`, `sec48` ve `sec1` sektörlerinden oluşmuştur. Dengeli performans filtresi `sec1` ve `sec48`i dışarıda bırakarak `sec29` ve `sec44`ü birincil aday olarak seçmiştir. Dört SNII, dört EIPI, iki dönüşüm ve üç denge kuralından oluşan 96 spesifikasyonda `sec29` ve `sec44` her defasında seçilmiş; `sec31` %25.0, `sec1` %14.6, `sec30` %12.5 ve `sec48` yalnızca %1.0 seçim oranı göstermiştir. Bu nedenle nihai sağlam çekirdek `sec29` ve `sec44` olarak belirlenmiştir. Bu sınıflama istatistiksel bir üyelik olasılığı değil, açıkça tanımlanmış spesifikasyon evrenindeki karar kararlılığıdır.
 
 ## 1. Araştırma Problemi
 
@@ -21,10 +21,10 @@ Ana girdi, Analiz III'teki 62 sektör × 43 değişkenlik birleşik paneldir. D�
 | Katman | Varyantlar |
 |---|---|
 | SNII | `SNII_DIM`, `SNII_TOPSIS`, `SNII_PCA`, `SNII_AVG` |
-| EIPI | Boyut-kontrollü `EIPI_CH`, `EIPI_TOPSIS`, `EIPI_PCA`, `EIPI_AVG` |
+| EIPI | `EIPI_CH`, `EIPI_TOPSIS`, `EIPI_PCA`, `EIPI_AVG` |
 | Normatif kanallar | `SNII_DIM`, büyüme-yayılma, refah-dağılım, dış denge, fiyat istikrarı |
 
-Girdiler klasör içine kopyalanarak analiz dış klasör bağımlılığından arındırılmıştır. Alternatif TOPSIS, PCA ve AVG EIPI skorları, ana hedefle karşılaştırılmadan önce ayrı ayrı `log_output` üzerine doğrusal regresyon kalıntısı alınarak boyuttan arındırılmış ve $[0,1]$ aralığına taşınmıştır. Böylece yöntem değişimi sektör büyüklüğü değişimiyle karıştırılmamıştır. Sektörler hâlen `sec1…sec62` kodlarıyla temsil edilmektedir; ekonomik faaliyet adları sağlanmadığı için sektör adı temelli politika yorumu yapılmamıştır.
+Girdiler klasör içine kopyalanarak analiz dış klasör bağımlılığından arındırılmıştır. Ana analiz `EIPI_CH` değerini doğrudan kullanır; TOPSIS, PCA ve AVG skorları alternatif toplulaştırma yöntemleridir. Sektörler `sec1…sec62` kodlarıyla temsil edilmektedir.
 
 ## 3. Yöntem
 
@@ -125,9 +125,9 @@ Ek olarak 10.000 ağırlık vektörü beş boyutlu simplex üzerinde Dirichlet$(
 |---|---:|---:|---:|---|
 | `sec29` | 96/96 | 1.000 | 1.000 | Sağlam Çekirdek |
 | `sec44` | 96/96 | 1.000 | 1.000 | Sağlam Çekirdek |
-| `sec30` | 48/96 | 0.500 | 0.500 | Spesifikasyona Duyarlı |
+| `sec31` | 24/96 | 0.250 | 0.250 | Sağlam Çekirdek Değil |
 | `sec48` | 21/96 | 0.219 | 0.250 | Sağlam Çekirdek Değil |
-| `sec31` | 18/96 | 0.188 | 0.188 | Sağlam Çekirdek Değil |
+| `sec30` | 12/96 | 0.125 | 0.125 | Sağlam Çekirdek Değil |
 | `sec1` | 12/96 | 0.125 | 0.250 | Sağlam Çekirdek Değil |
 
 Diğer 56 sektör hiçbir spesifikasyonda çekirdek seçilmemiştir. En önemli bulgu `sec48`in ana modelde aday olmasına karşın yalnızca 21 spesifikasyonda seçilmesidir. SNII eksenindeki maksimum değer, alternatif EIPI/endeks/dönüşüm tercihlerinde dengeli üstünlüğe dönüşmemektedir. Buna karşılık `sec29` ve `sec44` bütün yöntem tercihlerinde hem Pareto-etkin hem yüksek dengeli performans göstermiştir.
@@ -136,7 +136,7 @@ Diğer 56 sektör hiçbir spesifikasyonda çekirdek seçilmemiştir. En önemli 
 
 ### 4.3. Eski ve yeni yöntemin karşılaştırılması
 
-Ortalama-eşikli yöntemde dokuz Stratejik Çekirdek sektör bulunurken yeni katı kural iki Sağlam Çekirdek sektör üretmiştir:
+Ortalama-eşikli yöntemde sekiz Stratejik Çekirdek sektör bulunurken yeni katı kural iki Sağlam Çekirdek sektör üretmiştir:
 
 | Geçiş | Sektör sayısı |
 |---|---:|
@@ -145,7 +145,7 @@ Ortalama-eşikli yöntemde dokuz Stratejik Çekirdek sektör bulunurken yeni kat
 | Her iki yöntemde çekirdek dışı | 53 |
 | Yeni yöntemde sonradan çekirdeğe giren | 0 |
 
-Bu sonuç eski dokuz sektörün ekonomik olarak önemsiz olduğunu göstermez. Yeni sınıflama daha dar bir soruya cevap verir: "hangi sektörler hem iki eksende elenemez hem dengeli hem de ölçüm tercihlerinin neredeyse tamamında aynı kararı korur?"
+Bu sonuç eski sekiz sektörün ekonomik olarak önemsiz olduğunu göstermez. Yeni sınıflama daha dar bir soruya cevap verir: "hangi sektörler hem iki eksende elenemez hem dengeli hem de ölçüm tercihlerinin neredeyse tamamında aynı kararı korur?"
 
 ### 4.4. Normatif senaryolar
 
@@ -182,7 +182,7 @@ Bu ayrım, bir sektörün "core değilse desteklenmemesi gerekir" biçimindeki h
 
 ## 7. Makaleye Entegrasyon Önerisi
 
-Ana makalede ortalama-eşikli dört çeyrek şekli betimsel harita olarak tutulmalı; nihai çekirdek tanımı Analiz IV yöntemiyle verilmelidir. Yöntem bölümünde Pareto katmanları ve üç denge skoru; sağlamlık bölümünde 96 spesifikasyon; politika bölümünde ise dört açık normatif senaryo sunulmalıdır. Ana sonuç "dokuz core sektör" yerine şu biçimde yazılabilir:
+Ana makalede ortalama-eşikli dört çeyrek şekli betimsel harita olarak tutulmalı; nihai çekirdek tanımı Analiz IV yöntemiyle verilmelidir. Yöntem bölümünde Pareto katmanları ve üç denge skoru; sağlamlık bölümünde 96 spesifikasyon; politika bölümünde ise dört açık normatif senaryo sunulmalıdır. Ana sonuç "sekiz core sektör" yerine şu biçimde yazılabilir:
 
 > Ana endeks çiftinde üç sektör Pareto-etkin ve dengeli çekirdek adayıdır; ancak alternatif endeks, dönüşüm ve denge kurallarından oluşan 96 spesifikasyonun tamamında yalnızca `sec29` ve `sec44` üyeliğini korumaktadır. Normatif politika sıralamaları ek adaylar üretmekte, böylece ampirik sistemik çekirdek ile tercih-koşullu politika önceliğinin aynı olmadığı gösterilmektedir.
 

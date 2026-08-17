@@ -294,7 +294,8 @@ def figures(primary: pd.DataFrame, robustness: pd.DataFrame, scenario_long: pd.D
 
     fig, ax = plt.subplots(figsize=(11, 8))
 
-    selected_layers = [1, 2, 3, 9, 10, 11, 12]
+    tail_layers = sorted(primary["pareto_layer"].unique())[-4:]
+    selected_layers = [1, 2, 3, *tail_layers]
     selected = primary[primary["pareto_layer"].isin(selected_layers)]
     other_sectors = primary[~primary["pareto_layer"].isin(selected_layers)]
     ax.scatter(
@@ -302,14 +303,13 @@ def figures(primary: pd.DataFrame, robustness: pd.DataFrame, scenario_long: pd.D
         s=60, c="#3182bd", alpha=0.30, label="Other sectors", edgecolors="none",
     )
 
-    layer_colors = {
-        1: "#d73027", 2: "#f46d43", 3: "#fdae61",
-        9: "#4575b4", 10: "#66bd63", 11: "#984ea3", 12: "#252525",
-    }
-    layer_markers = {1: "o", 2: "^", 3: "D", 9: "P", 10: "s", 11: "v", 12: "X"}
-    layer_linestyles = {1: "--", 2: "-.", 3: ":", 9: "-.", 10: "--", 11: ":", 12: "-"}
+    layer_colors = {1: "#d73027", 2: "#f46d43", 3: "#fdae61"}
+    layer_markers = {1: "o", 2: "^", 3: "D"}
+    layer_linestyles = {1: "--", 2: "-.", 3: ":"}
+    for layer, color, marker, style in zip(tail_layers, ["#4575b4", "#66bd63", "#984ea3", "#252525"], ["P", "s", "v", "X"], ["-.", "--", ":", "-"]):
+        layer_colors[layer], layer_markers[layer], layer_linestyles[layer] = color, marker, style
 
-    for layer in [1, 2, 3, 9, 10, 11, 12]:
+    for layer in selected_layers:
         layer_data = selected[selected["pareto_layer"] == layer].sort_values("EIPI_percentile")
         ax.scatter(
             layer_data["EIPI_percentile"], layer_data["SNII_percentile"], s=90,
@@ -331,17 +331,14 @@ def figures(primary: pd.DataFrame, robustness: pd.DataFrame, scenario_long: pd.D
         ax.annotate(
             row["sector"], (row["EIPI_percentile"], row["SNII_percentile"]),
             xytext=label_offsets.get(row["sector"], (5, 5)),
-            textcoords="offset points", fontsize=8.3,
-            weight="bold" if row["pareto_layer"] in {1, 12} else "normal",
+            textcoords="offset points", fontsize=13.3,
+            weight="bold" if row["pareto_layer"] in {1, max(tail_layers)} else "normal",
         )
 
-    ax.set(
-        xlabel="EIPI percentile rank", ylabel="SNII percentile rank",
-        title="Selected Pareto fronts (Layers 1–3 and 9–12)",
-    )
+    ax.set(xlabel="EIPI percentile rank", ylabel="SNII percentile rank")
     ax.set_xlim(-0.02, 1.05)
     ax.set_ylim(-0.02, 1.05)
-    ax.legend(fontsize=8.4, loc="lower right", ncol=2)
+    ax.legend(fontsize=12.4, loc="lower right", ncol=2)
     fig.tight_layout()
     fig.savefig(BASE / "9_primary_pareto_core.png", dpi=300)
     plt.close(fig)
@@ -367,7 +364,11 @@ def figures(primary: pd.DataFrame, robustness: pd.DataFrame, scenario_long: pd.D
     pivot = pivot.loc[ordered]
     fig, ax = plt.subplots(figsize=(9, 8))
     sns.heatmap(pivot, cmap="viridis_r", annot=True, fmt=".0f", cbar_kws={"label": "Rank"}, ax=ax)
-    ax.set(title="Sector ranks under explicit normative policy scenarios", xlabel="Policy scenario", ylabel="Sector")
+    ax.set(xlabel="Policy scenario", ylabel="Sector")
+    tick_size = plt.rcParams["xtick.labelsize"]
+    tick_size = float(tick_size) - 1 if isinstance(tick_size, (int, float)) else 10
+    scenario_labels = [label.replace("_", "\n") for label in pivot.columns]
+    ax.set_xticklabels(scenario_labels, rotation=0, ha="center", fontsize=tick_size, fontweight="bold")
     fig.tight_layout(); fig.savefig(BASE / "11_normative_scenario_heatmap.png", dpi=300); plt.close(fig)
 
     top = consensus.head(20).sort_values("top10_preference_frequency")
